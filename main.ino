@@ -5,9 +5,9 @@ ESP8266WebServer server;
     
     uint8_t pin_alarm = 5;
     uint8_t pin_motion = 4;
-    uint8_t pin_pres = 10;
-    char* ssid = "electro";
-    char* password = "12345678";
+    uint8_t pin_pres = 13;
+    char* ssid = "PCUAQ82";
+    char* password = "PCUAQ8282";
     String alarm_state;
     String motion_state;
     String pres_state;
@@ -20,7 +20,7 @@ ESP8266WebServer server;
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>PETFED</title>
+        <title>Sensor states</title>
     </head>
     <body>
     </body>
@@ -76,14 +76,29 @@ ESP8266WebServer server;
     
     void getState()
     {
+
+      int pinState_A = digitalRead(pin_alarm);
+      int pinState_P = digitalRead(pin_pres);
+      
       /*
       alarm_state = digitalRead(pin_alarm) ? "{\n \t\"gas\": 1 \n" : "{\n \t\"gas\": 0, \n";
       motion_state = digitalRead(pin_motion) ? "\n \t\"motion\": 1 \n" : "\n \t\"motion\": 0, \n";
       pres_state = digitalRead(pin_pres) ? "\n \t\"presence\": 1 \n}" : "\n \t\"presence\": 0 \n}";
       */
-      alarm_state = "{\n \t gas: 1, \n";
-      motion_state = "\n \t motion: 0, \n";
-      pres_state = "\n \t presence: 1 \n}";
+     // alarm_state = "{\n \t gas: 1, \n";
+     // motion_state = digitalRead(pin_motion) ? "\n \t\"motion\": 1 \n" : "\n \t\"motion\": 0, \n";
+     if (pinState_A == HIGH) {
+        alarm_state = "{\n \t alarm: 1, \n";
+      } else {
+        alarm_state = "{\n \t alarm: 0, \n";
+      }
+      if (pinState_P == HIGH) {
+        pres_state = "\n\t window: 1 \n}";
+      } else {
+        pres_state = "\n\t window: 0 \n}";
+      }
+      motion_state = "\n\t pir: 0, \n";
+      //pres_state = "\n \t presence: 1 \n}";-
 
       total_state = alarm_state+motion_state+pres_state;
 
